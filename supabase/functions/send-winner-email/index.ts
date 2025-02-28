@@ -23,11 +23,8 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') as string;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') as string;
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    
-    if (!resendApiKey) {
-      throw new Error("RESEND_API_KEY is not set. Email sending is disabled.");
-    }
+    // Use the provided API key
+    const resendApiKey = 're_WnaYqBi4_GuzHh94ebN1QTLSX4mso7Qf9';
     
     const resend = new Resend(resendApiKey);
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -99,7 +96,7 @@ serve(async (req) => {
         <p style="font-size: 16px; line-height: 1.5; color: #555;">You've won the auction for <strong>${auction.title}</strong> with a bid of <strong>$${bidAmount}</strong>.</p>
         <p style="font-size: 16px; line-height: 1.5; color: #555;">Please complete your payment within the next 24 hours to secure your win.</p>
         <div style="margin: 30px 0; text-align: center;">
-          <a href="${supabaseUrl.replace('ezrfatxvtvuyyphkvdod.supabase.co', 'localhost:3000')}/dashboard" 
+          <a href="${supabaseUrl.replace('.supabase.co', '')}/dashboard" 
              style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
             Go to Dashboard
           </a>
