@@ -20,7 +20,7 @@ serve(async (req) => {
 
     console.log("Processing auction winners...");
 
-    // Find recently ended auctions where winners need to be determined
+    // Find recently ended auctions where winners have not been processed
     const { data: endedAuctions, error: auctionError } = await supabase
       .from('auctions')
       .select('id, title, max_spots')
