@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { NavBar } from "@/components/NavBar";
+import { NavBar } from "@/components/Navbar"; // Changed from NavBar to Navbar (lowercase 'b')
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import AuctionDetail from "./pages/AuctionDetail";
