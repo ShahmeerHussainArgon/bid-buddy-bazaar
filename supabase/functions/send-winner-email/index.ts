@@ -67,6 +67,7 @@ serve(async (req) => {
 
     // Get bid details if provided
     let bidAmount = 0;
+    let directPaymentLink = '';
     if (bid_id) {
       const { data: bid, error: bidError } = await supabase
         .from('bids')
@@ -76,6 +77,9 @@ serve(async (req) => {
 
       if (!bidError && bid) {
         bidAmount = bid.amount;
+        
+        // Generate a direct payment link
+        directPaymentLink = `${supabaseUrl.replace('.supabase.co', '').replace('https://', 'http://localhost:3000/')}/payment/${bid_id}`;
       }
     }
 
@@ -96,9 +100,9 @@ serve(async (req) => {
         <p style="font-size: 16px; line-height: 1.5; color: #555;">You've won the auction for <strong>${auction.title}</strong> with a bid of <strong>$${bidAmount}</strong>.</p>
         <p style="font-size: 16px; line-height: 1.5; color: #555;">Please complete your payment within the next 24 hours to secure your win.</p>
         <div style="margin: 30px 0; text-align: center;">
-          <a href="${supabaseUrl.replace('.supabase.co', '')}/dashboard" 
+          <a href="${directPaymentLink}" 
              style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-            Go to Dashboard
+            Complete Payment Now
           </a>
         </div>
         <p style="font-size: 14px; color: #777; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;">
@@ -108,9 +112,9 @@ serve(async (req) => {
     `;
 
     try {
-      // Actually send the email using Resend
+      // Send the email using Resend with the correct from address
       const { data: emailResponse, error: emailError } = await resend.emails.send({
-        from: 'Auction Platform <onboarding@resend.dev>',
+        from: 'onboarding@resend.dev',
         to: [user.email],
         subject: emailSubject,
         html: emailHtml

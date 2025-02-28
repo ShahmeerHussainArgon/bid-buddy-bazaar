@@ -25,7 +25,7 @@ serve(async (req) => {
       .from('auctions')
       .select('id, title, max_spots')
       .lt('ends_at', new Date().toISOString())
-      .eq('winners_processed', true)
+      .eq('winners_processed', false)  // Changed to false to find unprocessed auctions
       .order('ends_at', { ascending: false })
       .limit(5); // Process a few at a time
 
@@ -33,7 +33,7 @@ serve(async (req) => {
       throw new Error(`Error fetching ended auctions: ${auctionError.message}`);
     }
 
-    console.log(`Found ${endedAuctions?.length || 0} recently ended auctions`);
+    console.log(`Found ${endedAuctions?.length || 0} recently ended auctions to process`);
 
     const results = [];
 
@@ -97,6 +97,18 @@ serve(async (req) => {
             error: error.message
           });
         }
+      }
+
+      // Mark the auction as processed after sending emails
+      const { error: updateError } = await supabase
+        .from('auctions')
+        .update({ winners_processed: true })
+        .eq('id', auction.id);
+
+      if (updateError) {
+        console.error(`Error updating auction ${auction.id} processed status:`, updateError);
+      } else {
+        console.log(`Successfully marked auction ${auction.id} as processed`);
       }
     }
 
